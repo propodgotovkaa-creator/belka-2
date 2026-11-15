@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#dce5d7">
+<title>Белочка учится читать</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#dce5d7}body{display:grid;place-items:center;font-family:system-ui,-apple-system,sans-serif}.game{position:relative;width:min(100vw,177.7778vh);height:min(56.25vw,100vh);overflow:hidden;background:#dfeaf0;isolation:isolate;touch-action:manipulation}canvas{width:100%;height:100%;display:block}button{font:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}.cone{position:absolute;width:7.75%;height:16%;padding:0;border:0;background:transparent;cursor:pointer;border-radius:50%;z-index:2;transform:translate(-50%,-50%)}.cone:focus-visible{outline:3px solid #faf3da;outline-offset:3px;box-shadow:0 0 0 5px #627751}.cone[hidden],.finish[hidden],.error[hidden]{display:none}.finish{position:absolute;left:3%;top:3%;width:29%;padding:1.4% 1.5%;text-align:center;background:#faf6e7eF;border:2px solid #9fa87b;border-radius:24px;color:#536148;box-shadow:0 8px 20px #39473418;z-index:3}.finish h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(15px,2.5vw,40px);line-height:1.22;margin:0 0 12px}.again,.retry{border:0;border-radius:999px;background:#6c805c;color:#fffdf3;padding:.7em 1.1em;cursor:pointer;font-size:clamp(12px,1.4vw,23px)}.again:hover,.retry:hover{background:#586e4d}.again:focus-visible,.retry:focus-visible{outline:3px solid #b8914e;outline-offset:4px}.error{position:absolute;inset:15%;padding:5%;background:#fffdf4;color:#485442;border-radius:20px;text-align:center;overflow:auto;z-index:5}.error p{line-height:1.5}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-height:450px){.finish{border-radius:15px}.finish h1{font-size:clamp(15px,4vh,28px)}.again{font-size:clamp(12px,3vh,20px)}}
+
+[hidden]{display:none!important}
+.menu{position:fixed;inset:0;z-index:4;display:grid;place-items:center;padding:24px;overflow:auto;background:linear-gradient(#eef3e8ad,#f5f1e2ce),url('https://raw.githubusercontent.com/propodgotovkaa-creator/belka/a80e65b1a9d974ed7c81f690abf4540ee878ce0e/assets/scene/forest-far.png') center/cover;color:#465a42}
+.menu-panel{width:min(820px,100%);padding:clamp(20px,4vw,44px);border:2px solid #b4ba96;border-radius:32px;background:#fffbedf2;box-shadow:0 16px 60px #344f3524;text-align:center}
+.menu h1{font-family:Georgia,serif;font-size:clamp(25px,4vw,42px);font-weight:normal;margin:0 0 10px}.menu p{margin:0 0 24px;font-size:clamp(15px,2vw,20px)}
+.rounds{display:grid;grid-template-columns:1fr 1fr;gap:14px}.round{display:flex;align-items:center;gap:16px;text-align:left;padding:16px;border:1px solid #b8c09f;border-radius:20px;background:#f4f4e7;color:#465a42;cursor:pointer;font-size:clamp(16px,2vw,23px);transition:background .15s,transform .15s}.round:hover{background:#e7eddc;transform:translateY(-2px)}.round:focus-visible,.menu-button:focus-visible{outline:3px solid #b8914e;outline-offset:3px}.round:disabled{cursor:wait;opacity:.65}.menu-status{margin:18px 0 0!important;font-size:15px!important}.menu-button{position:absolute;left:2%;top:2%;z-index:3;padding:.6em 1em;border:1px solid #abb38e;border-radius:999px;background:#fffbedec;color:#465a42;cursor:pointer;font-size:clamp(12px,1.4vw,20px)}.finish .menu-button{position:static;display:block;margin:12px auto 0}.finish{left:50%;top:50%;transform:translate(-50%,-50%);width: min(480px,80%);padding:clamp(16px,2.5vw,32px)}
+@media(max-width:540px){.menu{padding:12px}.menu-panel{padding:22px 16px}.rounds{gap:10px}.round{flex-direction:column;text-align:center;gap:8px;padding:12px 6px}}
+@media(max-height:500px){.menu{padding:10px}.menu-panel{padding:16px}.menu h1{font-size:24px}.menu p{margin-bottom:12px}.round{padding:8px}}
+
+body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
+.game-stage{width:100%;aspect-ratio:16/9;position:relative}
+.menu{place-items:safe center}
+.menu-panel{width:min(900px,100%)}
+.rounds{gap:9px}
+.round{padding:10px 12px;min-height:48px;font-size:clamp(14px,1.65vw,18px);line-height:1.2;gap:10px;border-radius:14px}
+.round-number{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#dce6cf;font-size:14px;font-weight:700}
+.reading{position:absolute;z-index:3;left:3%;top:50%;transform:translateY(-50%);width:36%;padding:clamp(12px,2.2vw,28px) 10px;text-align:center;border-radius:24px;background:#fffbedf5;color:#354731;border:2px solid #b4ba96;box-shadow:0 8px 24px #344f3530}
+.progress{margin:0;color:#526349;font-size:clamp(13px,1.4vw,19px)}
+.word{margin:.45em 0;font-size:clamp(17px,3.65vw,60px);font-weight:750;line-height:1.1;overflow-wrap:anywhere}
+.read:disabled{opacity:.65;cursor:default}
+#back-menu{z-index:4}
+@media(max-width:540px){
+ .round{flex-direction:row;text-align:left;padding:8px}
+ .round-number{width:26px;height:26px;font-size:12px}
+}
+@media(orientation:portrait){
+ .game{width:min(100vw,680px);height:auto;overflow:visible;border-radius:16px}
+ .game-stage{overflow:hidden;border-radius:16px 16px 0 0}
+ .reading{position:relative;top:auto;left:auto;transform:none;width:100%;border-radius:0 0 16px 16px;padding:22px 12px}
+ .word{font-size:clamp(26px,8.2vw,52px)}
+ #back-menu{position:fixed;left:12px;top:12px}
+ .cone{min-width:44px;min-height:44px}
+ .finish{padding:12px}
+}
+</style>
+</head>
+<body>
+<main class="game" aria-label="Белочка учится читать">
+ <div class="game-stage">
+  <canvas id="scene" width="1600" height="900" role="img" aria-label="Белочка поднимается по веткам ели."></canvas>
+  <button id="back-menu" class="menu-button" hidden>← Уровни</button>
+  <button id="cone" class="cone" type="button" aria-label="Слово прочитано, белочка прыгает" hidden></button>
+  <section id="finish" class="finish" aria-label="Уровень пройден" hidden>
+   <h1>Мы на верхушке!</h1>
+   <p>Прочитано 14 слов</p>
+   <button id="again" class="again">Играть ещё</button>
+   <button id="finish-menu" class="menu-button">Выбрать уровень</button>
+  </section>
+ </div>
+ <section id="reading-card" class="reading" aria-label="Карточка для чтения" hidden>
+  <div role="status" aria-atomic="true">
+   <p id="progress" class="progress"></p>
+   <p id="word" class="word" tabindex="-1"></p>
+  </div>
+  <button id="read" class="again read" type="button">Прочитано</button>
+ </section>
+ <section id="error" class="error" role="alert" hidden>
+  <p>Лес не загрузился. Попробуйте ещё раз.</p>
+  <p id="error-detail" class="sr"></p>
+  <button id="retry" class="retry">Повторить</button>
+ </section>
+</main>
+<section id="menu" class="menu" aria-labelledby="menu-title">
+ <div class="menu-panel">
+  <h1 id="menu-title">Белочка учится читать</h1>
+  <p>Выбери тип слоговой структуры по Марковой</p>
+  <div class="rounds"><button class="round" data-round="0" disabled><span class="round-number">1</span><span>Два открытых слога</span></button>
+<button class="round" data-round="1" disabled><span class="round-number">2</span><span>Три открытых слога</span></button>
+<button class="round" data-round="2" disabled><span class="round-number">3</span><span>Один закрытый слог</span></button>
+<button class="round" data-round="3" disabled><span class="round-number">4</span><span>Два слога, последний закрытый</span></button>
+<button class="round" data-round="4" disabled><span class="round-number">5</span><span>Два слога, стечение в середине</span></button>
+<button class="round" data-round="5" disabled><span class="round-number">6</span><span>Два слога, стечение и закрытый слог в конце</span></button>
+<button class="round" data-round="6" disabled><span class="round-number">7</span><span>Три слога, последний закрытый</span></button>
+<button class="round" data-round="7" disabled><span class="round-number">8</span><span>Три слога, одно стечение согласных</span></button>
+<button class="round" data-round="8" disabled><span class="round-number">9</span><span>Три слога, стечение и закрытый слог в конце</span></button>
+<button class="round" data-round="9" disabled><span class="round-number">10</span><span>Три слога, два стечения согласных</span></button>
+<button class="round" data-round="10" disabled><span class="round-number">11</span><span>Один слог, стечение в начале</span></button>
+<button class="round" data-round="11" disabled><span class="round-number">12</span><span>Один слог, стечение в конце</span></button>
+<button class="round" data-round="12" disabled><span class="round-number">13</span><span>Два слога, два стечения согласных</span></button>
+<button class="round" data-round="13" disabled><span class="round-number">14</span><span>Четыре открытых слога</span></button></div>
+  <p id="menu-status" class="menu-status" role="status">Загружаем лес…</p>
+ </div>
+</section>
+<script id="manifest-data" type="application/json">{"assets":["assets/branches/branches-atlas.png","assets/branches/needles-front.png","assets/scene/forest-far.png","assets/scene/forest-floor.png","assets/scene/forest-near.png","assets/scene/sky.png","assets/scene/spruce-master.png","assets/squirrel/idle-atlas.png","assets/squirrel/jump-atlas.png","assets/squirrel/wave-atlas.png","assets/ui/cone.png"],"stops":[{"id":0,"landingX":1250,"height":260,"cameraBottom":0,"branch":"lower-right","branchScale":0.64846,"rootX":1060,"rootHeight":198.396,"cone":false},{"id":1,"landingX":800,"height":720,"cameraBottom":460,"branch":"lower-left","branchScale":0.8254,"rootX":1060,"rootHeight":647.365,"cone":true,"taskId":1},{"id":2,"landingX":1310,"height":1180,"cameraBottom":920,"branch":"lower-right","branchScale":0.85324,"rootX":1060,"rootHeight":1098.942,"cone":true,"taskId":2},{"id":3,"landingX":840,"height":1640,"cameraBottom":1380,"branch":"lower-left","branchScale":0.69841,"rootX":1060,"rootHeight":1578.54,"cone":true,"taskId":3},{"id":4,"landingX":1270,"height":2100,"cameraBottom":1840,"branch":"middle-right","branchScale":0.77491,"rootX":1060,"rootHeight":2079.077,"cone":true,"taskId":4},{"id":5,"landingX":865,"height":2560,"cameraBottom":2300,"branch":"middle-left","branchScale":0.63312,"rootX":1060,"rootHeight":2535.308,"cone":true,"taskId":5},{"id":6,"landingX":1235,"height":3020,"cameraBottom":2760,"branch":"middle-right","branchScale":0.64576,"rootX":1060,"rootHeight":3002.565,"cone":true,"taskId":6},{"id":7,"landingX":910,"height":3480,"cameraBottom":3220,"branch":"middle-left","branchScale":0.48701,"rootX":1060,"rootHeight":3461.006,"cone":true,"taskId":7},{"id":8,"landingX":1200,"height":3940,"cameraBottom":3680,"branch":"upper-right","branchScale":0.56452,"rootX":1060,"rootHeight":3905.565,"cone":true,"taskId":8},{"id":9,"landingX":965,"height":4400,"cameraBottom":4140,"branch":"upper-left","branchScale":0.3668,"rootX":1060,"rootHeight":4376.525,"cone":true,"taskId":9},{"id":10,"landingX":1145,"height":4860,"cameraBottom":4600,"branch":"upper-right","branchScale":0.34274,"rootX":1060,"rootHeight":4839.093,"cone":true,"taskId":10}],"squirrel":{"idle":{"file":"assets/squirrel/idle-atlas.png","frames":{"rest":{"source":[110,105,455,440],"anchor":[155,422],"worldScale":0.5},"blink":{"source":[735,105,455,440],"anchor":[156,422],"worldScale":0.5},"breathe-in":{"source":[110,705,460,440],"anchor":[155,422],"worldScale":0.5},"breathe-out":{"source":[735,705,460,440],"anchor":[156,422],"worldScale":0.5}},"recommendedCycleMs":5200,"blinkDurationMs":140},"jump":{"file":"assets/squirrel/jump-atlas.png","frames":{"crouch":{"source":[35,145,575,420],"anchor":[257,403],"worldScale":0.35},"takeoff":{"source":[660,95,585,480],"anchor":[320,325],"worldScale":0.35},"airborne":{"source":[30,690,600,400],"anchor":[300,255],"worldScale":0.35},"land":{"source":[660,705,575,455],"anchor":[278,430],"worldScale":0.35}},"timingMs":{"crouch":250,"flight":1000,"landing":300}},"wave":{"file":"assets/squirrel/wave-atlas.png","frames":{"front":{"source":[145,15,505,610],"anchor":[183,596],"worldScale":0.35},"raise":{"source":[690,15,510,610],"anchor":[184,596],"worldScale":0.35},"out":{"source":[145,620,505,610],"anchor":[183,592],"worldScale":0.35},"in":{"source":[690,620,510,610],"anchor":[184,592],"worldScale":0.35}},"frameMs":360}},"tree":{"file":"assets/scene/spruce-master.png","x":360,"bottom":-180,"width":1400,"height":5350,"note":"One continuous source. Five virtual slices use the same image; do not independently rescale or paint seams. Preview uses intentional mild vertical elongation for world proportions.","regions":[{"id":0,"source":[0,0,724,434],"order":"top-to-bottom"},{"id":1,"source":[0,434,724,435],"order":"top-to-bottom"},{"id":2,"source":[0,869,724,434],"order":"top-to-bottom"},{"id":3,"source":[0,1303,724,435],"order":"top-to-bottom"},{"id":4,"source":[0,1738,724,434],"order":"top-to-bottom"}]},"branchVariants":{"lower-left":{"file":"assets/branches/branches-atlas.png","source":[0,120,525,505],"pivot":[495,233],"landing":[180,145]},"lower-right":{"file":"assets/branches/branches-atlas.png","source":[535,110,489,515],"pivot":[30,250],"landing":[323,155]},"middle-left":{"file":"assets/branches/branches-atlas.png","source":[0,670,530,405],"pivot":[493,147],"landing":[185,108]},"middle-right":{"file":"assets/branches/branches-atlas.png","source":[540,670,484,410],"pivot":[39,157],"landing":[310,130]},"upper-left":{"file":"assets/branches/branches-atlas.png","source":[30,1090,490,325],"pivot":[449,184],"landing":[190,120]},"upper-right":{"file":"assets/branches/branches-atlas.png","source":[550,1090,450,335],"pivot":[42,183],"landing":[290,122]}},"vocab":[{"label":"Два открытых слога","words":["мама","папа","муха","вата","луна","рыба","коза","сова","лиса","липа","мыло","ваза","роза","пила"]},{"label":"Три открытых слога","words":["машина","малина","собака","молоко","корова","ворона","лопата","кубики","колесо","монета","болото","берёза","панама","ракета"]},{"label":"Один закрытый слог","words":["мак","кот","кит","дом","дым","дуб","сыр","сок","нос","рот","суп","мяч","лук","жук"]},{"label":"Два слога, последний закрытый","words":["лимон","банан","каток","вагон","батон","пион","диван","петух","сапог","пакет","совок","веник","туман","халат"]},{"label":"Два слога, стечение в середине","words":["банка","тыква","утка","кепка","кофта","ветка","лодка","вилка","кукла","чашка","ложка","мышка","нитка","булка"]},{"label":"Два слога, стечение и закрытый слог в конце","words":["компот","сапфир","карман","фонтан","вулкан","кактус","магнит","бамбук","пингвин","пельмень","костюм","альбом","арбуз","барсук"]},{"label":"Три слога, последний закрытый","words":["котёнок","телёнок","телефон","молоток","колодец","барабан","помидор","чемодан","бегемот","ананас","карамель","поросёнок","теремок","самокат"]},{"label":"Три слога, одно стечение согласных","words":["комната","конфета","котлета","калитка","собачка","яблоко","улитка","лисичка","колбаса","подушка","палатка","ракетка","капуста","пантера"]},{"label":"Три слога, стечение и закрытый слог в конце","words":["апельсин","карандаш","абрикос","автобус","кораблик","мандарин","памятник","кузнечик","календарь","вертолёт","бутерброд","акробат","микрофон","крокодил"]},{"label":"Три слога, два стечения согласных","words":["клубника","матрёшка","лампочка","морковка","игрушка","избушка","скакалка","винтовка","таблетка","кормушка","хлопушка","тропинка","картинка","подставка"]},{"label":"Один слог, стечение в начале","words":["стол","стул","слон","флаг","хлеб","шкаф","кран","ключ","гриб","врач","град","снег","крот","кнут"]},{"label":"Один слог, стечение в конце","words":["танк","торт","зонт","винт","волк","полк","шарф","бант","бинт","лифт","лист","мост","пост","куст"]},{"label":"Два слога, два стечения согласных","words":["кнопка","клетка","крышка","кружка","стрелка","спичка","книжка","крошка","брошка","клюква","сливки","грелка","складка","звезда"]},{"label":"Четыре открытых слога","words":["кукуруза","паутина","черепаха","пирамида","гусеница","макароны","бегемоты","носороги","самокаты","водопады","помидоры","повариха","рукавица","водолазы"]}]}</script>
+<script id="game-code">
+'use strict';
+// Reading is untimed. Only a deliberate cone click can start a jump.
+const TIMING=Object.freeze({crouch:280,flight:1100,land:350,camera:1500,restarting:1900});
+const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+class Journey {
+ constructor(stops){this.stops=stops;this.reset();}
+ reset(){this.current=0;this.phase='ready';this.elapsed=0;this.camera=0;this.landingAge=Infinity;this.clock=0;this.restartFrom=0;}
+ click(){if(this.phase!=='ready'||this.current>=this.stops.length-1)return false;
+  this.phase='crouch';this.elapsed=0;return true;
+ }
+ restart(){if(this.phase!=='finished')return false;this.restartFrom=this.camera;this.phase='restarting';this.elapsed=0;this.current=0;this.landingAge=Infinity;return true;}
+ step(dt){if(!Number.isFinite(dt)||dt<0)return;this.clock+=dt;this.landingAge+=dt;let left=dt;
+  while(left>0){const duration=TIMING[this.phase];if(!duration)break;const used=Math.min(left,duration-this.elapsed);this.elapsed+=used;left-=used;
+   if(this.phase==='camera'){const a=this.stops[this.current-1].cameraBottom,b=this.stops[this.current].cameraBottom;this.camera=a+(b-a)*smooth(this.elapsed/duration);}
+   if(this.phase==='restarting')this.camera=this.restartFrom*(1-smooth(this.elapsed/duration));
+   if(this.elapsed<duration)break;
+   const phase=this.phase;this.elapsed=0;
+   if(phase==='crouch')this.phase='flight';
+   else if(phase==='flight'){this.current++;this.landingAge=0;this.phase='land';}
+   else if(phase==='land')this.phase='camera';
+   else if(phase==='camera')this.phase=this.current===this.stops.length-1?'finished':'ready';
+   else if(phase==='restarting'){this.reset();break;}
+  }
+ }
+}
+const M=JSON.parse(document.getElementById('manifest-data').textContent);
+const J=new Journey(M.stops),images={},c=document.getElementById('scene').getContext('2d');
+const cone=document.getElementById('cone'),finish=document.getElementById('finish'),again=document.getElementById('again'),errorBox=document.getElementById('error');
+const menu=document.getElementById('menu'),backMenu=document.getElementById('back-menu'),roundButtons=[...document.querySelectorAll('[data-round]')];
+const card=document.getElementById('reading-card');
+const word=document.getElementById('word'),progress=document.getElementById('progress'),read=document.getElementById('read');
+let inMenu=true,selectedRound=0;
+function roundStops(count){
+ const lastIndex=M.stops.length-1;
+ const start=M.stops[0].height,top=M.stops[lastIndex].height;
+ return Array.from({length:count+1},(_,i)=>{
+  const position=i*lastIndex/count;
+  const parity=i%2;
+  const index=Math.min(lastIndex-parity,Math.max(parity,Math.round((position-parity)/2)*2+parity));
+  const stop=M.stops[index];
+  const height=start+(top-start)*i/count,shift=height-stop.height;
+  return {...stop,id:i,height,rootHeight:stop.rootHeight+shift,cameraBottom:stop.cameraBottom+shift};
+ });
+}
+function chooseRound(id){
+ if(!loaded||!M.vocab[id])return;
+ selectedRound=id;
+ J.stops=roundStops(M.vocab[id].words.length);
+ J.reset();
+ lastWord=-1;
+ lastPhase='';
+ last=0;
+ inMenu=false;
+ menu.hidden=true;
+ syncUI();
+ word.focus({preventScroll:true});
+}
+function showMenu(){
+ inMenu=true;
+ J.reset();
+ lastWord=-1;
+ lastPhase='';
+ last=0;
+ menu.hidden=false;
+ syncUI();
+ roundButtons[selectedRound].focus({preventScroll:true});
+}
+roundButtons.forEach(b=>b.addEventListener('click',()=>chooseRound(Number(b.dataset.round))));
+backMenu.addEventListener('click',showMenu);document.getElementById('finish-menu').addEventListener('click',showMenu);
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let loaded=false,last=0,lastPhase='',lastWord=-1,loadAttempt=0,keyboardInteraction=false,nearLayer=null;
+const BASE=new URL("https://raw.githubusercontent.com/propodgotovkaa-creator/belka/a80e65b1a9d974ed7c81f690abf4540ee878ce0e/");
+function sprite(group,name,x,y,mirror=false,breath=0,alpha=1){const g=M.squirrel[group],f=g.frames[name],s=f.worldScale;c.save();c.globalAlpha*=alpha;c.translate(x,y);c.scale(mirror?-1:1,1+breath);c.drawImage(images[g.file],...f.source,-f.anchor[0]*s,-f.anchor[1]*s,f.source[2]*s,f.source[3]*s);c.restore();}
+function idleFrame(){const t=J.clock%5400;return t>3500&&t<3640?'blink':t<1800?'rest':t<3200?'breathe-in':'breathe-out';}
+function waveFrame(){return ['front','raise','out','in','out','in','front'][Math.floor(J.clock/380)%7];}
+function branchAngle(stop){if(stop.id!==J.current||J.landingAge>950||reduced)return 0;const t=J.landingAge/1000;return (stop.landingX<stop.rootX?-1:1)*.045*Math.exp(-4*t)*Math.sin(t*15);}
+function conePoint(){const stop=J.stops[J.current+1];return stop?{x:stop.landingX,y:900-stop.height+J.camera-49}:null;}
+function paintCone(x,y){const scale=J.phase==='ready'&&!reduced?1+.025*Math.sin(J.clock/380):1;c.save();c.translate(x,y);c.scale(scale,scale);c.drawImage(images['assets/ui/cone.png'],320,100,680,1060,-34,-54,68,106);c.restore();}
+function perched(stop,dx,dy){const mirrored=J.phase==='crouch'?J.stops[J.current+1].landingX>stop.landingX:stop.id%2===1;
+ if(J.phase==='crouch'){sprite('jump','crouch',dx,dy,mirrored);return;}
+ if(J.phase==='land'||(J.phase==='camera'&&J.landingAge<850)){
+  const stand=smooth((J.landingAge-550)/300);sprite('jump','land',dx,dy,stop.id%2===0,0,1-stand);
+  if(stand>0){if(stop.id===J.stops.length-1)sprite('wave','front',dx,dy,false,0,stand);else sprite('idle','rest',dx,dy,stop.id%2===1,0,stand);}return;
+ }
+ if(stop.id===J.stops.length-1&&(J.phase==='camera'||J.phase==='finished')){sprite('wave',waveFrame(),dx,dy);return;}
+ const breath=reduced?0:Math.sin(J.clock/850)*.007;
+ sprite('idle',idleFrame(),dx,dy,mirrored,breath);
+}
+function paintStop(stop){const v=M.branchVariants[stop.branch],s=stop.branchScale,ry=900-stop.rootHeight+J.camera;if(ry < -450||ry>1250)return;
+ const dx=(v.landing[0]-v.pivot[0])*s,dy=(v.landing[1]-v.pivot[1])*s;
+ c.save();c.translate(stop.rootX,ry);c.rotate(branchAngle(stop));
+ c.drawImage(images[v.file],...v.source,-v.pivot[0]*s,-v.pivot[1]*s,v.source[2]*s,v.source[3]*s);
+ if(stop.id===J.current+1&&J.phase!=='restarting')paintCone(dx,dy-49);
+ if(stop.id===J.current&&J.phase!=='flight'){perched(stop,dx,dy);c.drawImage(images['assets/branches/needles-front.png'],dx-53,dy-5,106,53);}
+ c.restore();
+}
+function paintFlight(){const from=J.stops[J.current],to=J.stops[J.current+1],u=Math.min(1,J.elapsed/TIMING.flight),x=from.landingX+(to.landingX-from.landingX)*u,y=900-from.height+J.camera-(to.height-from.height)*u-105*4*u*(1-u);const mirror=to.landingX>from.landingX;
+ // Stable flight reference point, independent of the changing silhouette.
+ if(u<.24){const mix=smooth((u-.14)/.10);sprite('jump','takeoff',x,y,mirror,0,1-mix);if(mix>0)sprite('jump','airborne',x,y,mirror,0,mix);}
+ else if(u>.85){const mix=smooth((u-.85)/.15);sprite('jump','airborne',x,y,mirror,0,1-mix);sprite('jump','land',x,y,mirror,0,mix);}
+ else sprite('jump','airborne',x,y,mirror);
+}
+function render(){c.clearRect(0,0,1600,900);if(images['assets/scene/sky.png'])c.drawImage(images['assets/scene/sky.png'],0,0,1600,900);if(!loaded)return;
+ c.drawImage(images['assets/scene/forest-far.png'],0,80+J.camera*.055,1600,900);
+ c.save();c.globalAlpha=Math.max(0,1-J.camera/2600);c.drawImage(nearLayer,0,J.camera*.5,1600,1000);c.restore();
+ const tree=M.tree;c.drawImage(images[tree.file],tree.x,900-tree.height-(tree.bottom||0)+J.camera,tree.width,tree.height);
+ J.stops.forEach(paintStop);if(J.phase==='flight')paintFlight();
+ if(J.camera<650)c.drawImage(images['assets/scene/forest-floor.png'],0,367+J.camera,1600,533);
+}
+function syncUI(){
+ const point=conePoint();
+ const active=loaded&&!inMenu&&J.phase==='ready';
+ const done=!inMenu&&J.phase==='finished';
+ cone.hidden=!active;
+ cone.disabled=!active;
+ if(point){
+  cone.style.left=point.x/16+'%';
+  cone.style.top=point.y/9+'%';
+ }
+ card.hidden=inMenu||done||J.phase==='restarting';
+ read.disabled=!active;
+ finish.hidden=!done;
+ backMenu.hidden=inMenu||done;
+ if(active&&J.current!==lastWord){
+  lastWord=J.current;
+  const words=M.vocab[selectedRound].words;
+  progress.textContent=`Слово ${J.current+1} из ${words.length}`;
+  word.textContent=words[J.current].toLocaleUpperCase('ru');
+ }
+ if(J.phase!==lastPhase){
+  const prior=lastPhase;
+  lastPhase=J.phase;
+  if(done)again.focus({preventScroll:true});
+  if(active&&keyboardInteraction&&prior)word.focus({preventScroll:true});
+ }
+}
+function advance(event){
+ keyboardInteraction=event.detail===0;
+ if(!inMenu&&J.click())syncUI();
+}
+cone.addEventListener('click',advance);
+read.addEventListener('click',advance);
+again.addEventListener('click',event=>{
+ keyboardInteraction=event.detail===0;
+ if(J.restart()){
+  lastWord=-1;
+  syncUI();
+ }
+});
+document.addEventListener('visibilitychange',()=>{last=0;});
+function tick(now){const dt=last?Math.min(80,now-last):0;last=now;if(!document.hidden&&loaded&&!inMenu)J.step(dt);render();syncUI();requestAnimationFrame(tick);}
+function loadImage(path){return new Promise((resolve,reject)=>{const im=new Image();const timeout=setTimeout(()=>reject(new Error(path)),45000);im.onload=()=>{clearTimeout(timeout);resolve(im);};im.onerror=()=>{clearTimeout(timeout);reject(new Error(path));};im.src=new URL(path,BASE).href;});}
+async function load(){const attempt=++loadAttempt;errorBox.hidden=true;menu.hidden=!inMenu;loaded=false;cone.hidden=true;roundButtons.forEach(b=>b.disabled=true);document.getElementById('menu-status').hidden=false;try{
+ const entries=await Promise.all(M.assets.map(async path=>[path,await loadImage(path)]));
+ if(attempt!==loadAttempt)return;for(const [path,im]of entries)images[path]=im;
+ // Feather the cropped tops of the near forest while the layer moves down.
+ const near=images['assets/scene/forest-near.png'];nearLayer=document.createElement('canvas');nearLayer.width=near.width;nearLayer.height=near.height;const n=nearLayer.getContext('2d');n.drawImage(near,0,0);n.globalCompositeOperation='destination-in';const fade=n.createLinearGradient(0,0,0,near.height*.18);fade.addColorStop(0,'rgba(0,0,0,0)');fade.addColorStop(1,'rgba(0,0,0,1)');n.fillStyle=fade;n.fillRect(0,0,near.width,near.height);
+ loaded=true;J.reset();last=0;roundButtons.forEach(b=>b.disabled=false);document.getElementById('menu-status').hidden=true;syncUI();
+ }catch(e){if(attempt!==loadAttempt)return;document.getElementById('error-detail').textContent='Не загружен файл: '+e.message;menu.hidden=true;errorBox.hidden=false;}}
+document.getElementById('retry').addEventListener('click',load);
+load();requestAnimationFrame(tick);
+
+</script>
+</body>
+</html>
