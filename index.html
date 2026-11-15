@@ -22,7 +22,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
 .menu-panel{width:min(900px,100%)}
 .rounds{gap:9px}
 .round{padding:10px 12px;min-height:48px;font-size:clamp(14px,1.65vw,18px);line-height:1.2;gap:10px;border-radius:14px}
-.round-number{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#dce6cf;font-size:14px;font-weight:700}
+.round-number{flex:none;display:grid;place-items:center;min-width:56px;height:30px;padding-inline:6px;border-radius:999px;white-space:nowrap;background:#dce6cf;font-size:14px;font-weight:700}
 .reading{position:absolute;z-index:3;left:3%;top:50%;transform:translateY(-50%);width:36%;padding:clamp(12px,2.2vw,28px) 10px;text-align:center;border-radius:24px;background:#fffbedf5;color:#354731;border:2px solid #b4ba96;box-shadow:0 8px 24px #344f3530}
 .progress{margin:0;color:#526349;font-size:clamp(13px,1.4vw,19px)}
 .word{margin:.45em 0;font-size:clamp(17px,3.65vw,60px);font-weight:750;line-height:1.1;overflow-wrap:anywhere}
@@ -30,7 +30,7 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
 #back-menu{z-index:4}
 @media(max-width:540px){
  .round{flex-direction:row;text-align:left;padding:8px}
- .round-number{width:26px;height:26px;font-size:12px}
+ .round-number{min-width:46px;height:26px;font-size:12px}
 }
 @media(orientation:portrait){
  .game{width:min(100vw,680px);height:auto;overflow:visible;border-radius:16px}
@@ -73,20 +73,20 @@ body{font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
  <div class="menu-panel">
   <h1 id="menu-title">Белочка учится читать</h1>
   <p>Выбери тип слоговой структуры по Марковой</p>
-  <div class="rounds"><button class="round" data-round="0" disabled><span class="round-number">1</span><span>Два открытых слога</span></button>
-<button class="round" data-round="1" disabled><span class="round-number">2</span><span>Три открытых слога</span></button>
-<button class="round" data-round="2" disabled><span class="round-number">3</span><span>Один закрытый слог</span></button>
-<button class="round" data-round="3" disabled><span class="round-number">4</span><span>Два слога, последний закрытый</span></button>
-<button class="round" data-round="4" disabled><span class="round-number">5</span><span>Два слога, стечение в середине</span></button>
-<button class="round" data-round="5" disabled><span class="round-number">6</span><span>Два слога, стечение и закрытый слог в конце</span></button>
-<button class="round" data-round="6" disabled><span class="round-number">7</span><span>Три слога, последний закрытый</span></button>
-<button class="round" data-round="7" disabled><span class="round-number">8</span><span>Три слога, одно стечение согласных</span></button>
-<button class="round" data-round="8" disabled><span class="round-number">9</span><span>Три слога, стечение и закрытый слог в конце</span></button>
-<button class="round" data-round="9" disabled><span class="round-number">10</span><span>Три слога, два стечения согласных</span></button>
-<button class="round" data-round="10" disabled><span class="round-number">11</span><span>Один слог, стечение в начале</span></button>
-<button class="round" data-round="11" disabled><span class="round-number">12</span><span>Один слог, стечение в конце</span></button>
-<button class="round" data-round="12" disabled><span class="round-number">13</span><span>Два слога, два стечения согласных</span></button>
-<button class="round" data-round="13" disabled><span class="round-number">14</span><span>Четыре открытых слога</span></button></div>
+  <div class="rounds"><button class="round" data-round="0" disabled><span class="round-number">Тип 1</span><span>Два открытых слога</span></button>
+<button class="round" data-round="1" disabled><span class="round-number">Тип 2</span><span>Три открытых слога</span></button>
+<button class="round" data-round="2" disabled><span class="round-number">Тип 3</span><span>Один закрытый слог</span></button>
+<button class="round" data-round="3" disabled><span class="round-number">Тип 4</span><span>Два слога, последний закрытый</span></button>
+<button class="round" data-round="4" disabled><span class="round-number">Тип 5</span><span>Два слога, стечение в середине</span></button>
+<button class="round" data-round="5" disabled><span class="round-number">Тип 6</span><span>Два слога, стечение и закрытый слог в конце</span></button>
+<button class="round" data-round="6" disabled><span class="round-number">Тип 7</span><span>Три слога, последний закрытый</span></button>
+<button class="round" data-round="7" disabled><span class="round-number">Тип 8</span><span>Три слога, одно стечение согласных</span></button>
+<button class="round" data-round="8" disabled><span class="round-number">Тип 9</span><span>Три слога, стечение и закрытый слог в конце</span></button>
+<button class="round" data-round="9" disabled><span class="round-number">Тип 10</span><span>Три слога, два стечения согласных</span></button>
+<button class="round" data-round="10" disabled><span class="round-number">Тип 11</span><span>Один слог, стечение в начале</span></button>
+<button class="round" data-round="11" disabled><span class="round-number">Тип 12</span><span>Один слог, стечение в конце</span></button>
+<button class="round" data-round="12" disabled><span class="round-number">Тип 13</span><span>Два слога, два стечения согласных</span></button>
+<button class="round" data-round="13" disabled><span class="round-number">Тип 14</span><span>Четыре открытых слога</span></button></div>
   <p id="menu-status" class="menu-status" role="status">Загружаем лес…</p>
  </div>
 </section>
